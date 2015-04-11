@@ -1,0 +1,49 @@
+LIBRARY       AMX32
+
+DESCRIPTION  'Pawn Abstract Machine'
+
+
+EXPORTS
+  amx_Align16
+  amx_Align32
+  amx_Align64
+  amx_Flags
+  amx_Callback
+  amx_Init
+  amx_Cleanup
+  amx_Clone
+  amx_MemInfo
+  amx_NameLength
+  amx_NumNatives
+  amx_GetNative
+  amx_FindNative
+  amx_NumPublics
+  amx_GetPublic
+  amx_FindPublic
+  amx_NumPubVars
+  amx_GetPubVar
+  amx_FindPubVar
+  amx_NumTags
+  amx_GetTag
+  amx_FindTagId
+  amx_GetUserData
+  amx_SetUserData
+  amx_Register
+  amx_NativeInfo
+  amx_Push
+  amx_PushAddress
+  amx_PushArray
+  amx_PushString
+  amx_Exec
+  amx_SetCallback
+  amx_SetDebugHook
+  amx_RaiseError
+  amx_Allot
+  amx_Release
+  amx_StrLen
+  amx_SetString
+  amx_GetString
+  amx_UTF8Get
+  amx_UTF8Put
+  amx_UTF8Check
+  amx_UTF8Len
