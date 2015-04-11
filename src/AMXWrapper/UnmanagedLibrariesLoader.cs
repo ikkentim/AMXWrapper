@@ -54,8 +54,7 @@ namespace AMXWrapper
             foreach (string lib in libraries)
             {
                 string dllPath = Path.Combine(directoryPath, String.Join(".", lib.Split('.').Skip(2)));
-
-                if (File.Exists(dllPath))
+                if (!File.Exists(dllPath))
                 {
                     using (Stream stm = Assembly.GetExecutingAssembly().GetManifestResourceStream(lib))
                     {
