@@ -93,8 +93,6 @@ namespace AMXWrapper
             FillMemory(_code, (uint) header.stackTop, 0);
             Marshal.Copy(pCode, 0, _code, header.size);
 
-            Console.WriteLine(Marshal.SizeOf(typeof (AMXStruct)));
-
             //var sb = new StringBuilder();
             //var h = Marshal.AllocHGlobal(1);
             //AMXCall.GetString(sb, h, 0, 0);
