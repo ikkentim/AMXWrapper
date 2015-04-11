@@ -47,3 +47,17 @@ EXPORTS
   amx_UTF8Put
   amx_UTF8Check
   amx_UTF8Len
+  amx_ConsoleInit
+  amx_ConsoleInit
+  amx_CoreInit
+  amx_CoreCleanup
+  amx_DGramInit
+  amx_DGramCleanup
+  amx_StringInit
+  amx_StringCleanup
+  amx_TimeInit
+  amx_TimeCleanup
+  amx_FixedInit
+  amx_FixedCleanup
+  amx_FloatInit
+  amx_FloatCleanup

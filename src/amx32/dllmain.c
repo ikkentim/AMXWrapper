@@ -36,8 +36,7 @@
 
 
 int AMXAPI amx_InitAMX(AMX *amx, void *program);
-int AMXAPI amx_CoreInit(AMX *amx);
-int AMXAPI amx_FixedInit(AMX *amx);
+
 
 
 int AMXAPI amx_Init(AMX *amx, void *program)
@@ -46,10 +45,6 @@ int AMXAPI amx_Init(AMX *amx, void *program)
 
     if ((err = amx_InitAMX(amx, program)) != AMX_ERR_NONE)
         return err;
-
-    /* load standard libraries */
-    amx_CoreInit(amx);
-    amx_FixedInit(amx);
 
     return err;
 }

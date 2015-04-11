@@ -76,10 +76,10 @@ namespace AMXWrapper
         public static extern int NumberOfTags(ref AMXStruct amx, out int number);
 
         [DllImport(Library, EntryPoint = "amx_GetTag")]
-        public static extern int GetTag(ref AMXStruct amx, int index, StringBuilder tagname, out Int32 tag_id);
+        public static extern int GetTag(ref AMXStruct amx, int index, StringBuilder tagname, out Int32 tagID);
 
         [DllImport(Library, EntryPoint = "amx_FindTagId")]
-        public static extern int FindTagId(ref AMXStruct amx, Int32 tag_id, StringBuilder tagname);
+        public static extern int FindTagId(ref AMXStruct amx, Int32 tagID, StringBuilder tagname);
 
         //private static extern int amx_GetUserData(ref AMX amx, long tag, void **ptr);
 
@@ -102,7 +102,7 @@ namespace AMXWrapper
         public static extern int PushArray(ref AMXStruct amx, out IntPtr address, int[] array, int numcells);
 
         [DllImport(Library, EntryPoint = "amx_PushString")]
-        public static extern int PushString(ref AMXStruct amx, out IntPtr address, string str, int pack, int use_wchar);
+        public static extern int PushString(ref AMXStruct amx, out IntPtr address, string str, int pack, int useWchar);
 
         [DllImport(Library, EntryPoint = "amx_Exec")]
         public static extern int Exec(ref AMXStruct amx, out int retval, int index);
@@ -126,10 +126,10 @@ namespace AMXWrapper
         public static extern int StrLen(IntPtr cstr, out int length);
 
         [DllImport(Library, EntryPoint = "amx_SetString")]
-        public static extern int SetString(IntPtr dest, string source, int pack, int use_wchar, int size);
+        public static extern int SetString(IntPtr dest, string source, int pack, int useWchar, int size);
 
         [DllImport(Library, EntryPoint = "amx_GetString")]
-        public static extern int GetString(StringBuilder dest, IntPtr source, int use_wchar, int size);
+        public static extern int GetString(StringBuilder dest, IntPtr source, int useWchar, int size);
 
         //public static extern int amx_UTF8Get(const char *string, const char **endptr, cell *value)
 
@@ -138,5 +138,50 @@ namespace AMXWrapper
         //public static extern int amx_UTF8Check(const char *string, int *length)
 
         //public static extern int amx_UTF8Len(const cell *cstr, int *length)
+
+
+        [DllImport(Library, EntryPoint = "amx_ConsoleInit")]
+        public static extern int ConsoleInit(ref AMXStruct amx);
+
+        [DllImport(Library, EntryPoint = "amx_ConsoleCleanup")]
+        public static extern int ConsoleCleanup(ref AMXStruct amx);
+
+        [DllImport(Library, EntryPoint = "amx_CoreInit")]
+        public static extern int CoreInit(ref AMXStruct amx);
+
+        [DllImport(Library, EntryPoint = "amx_CoreCleanup")]
+        public static extern int CoreCleanup(ref AMXStruct amx);
+
+        [DllImport(Library, EntryPoint = "amx_DGramInit")]
+        public static extern int DGramInit(ref AMXStruct amx);
+
+        [DllImport(Library, EntryPoint = "amx_DGramCleanup")]
+        public static extern int DGramCleanup(ref AMXStruct amx);
+
+        [DllImport(Library, EntryPoint = "amx_StringInit")]
+        public static extern int StringInit(ref AMXStruct amx);
+
+        [DllImport(Library, EntryPoint = "amx_StringCleanup")]
+        public static extern int StringCleanup(ref AMXStruct amx);
+
+        [DllImport(Library, EntryPoint = "amx_TimeInit")]
+        public static extern int TimeInit(ref AMXStruct amx);
+
+        [DllImport(Library, EntryPoint = "amx_TimeCleanup")]
+        public static extern int TimeClean(ref AMXStruct amx);
+
+        [DllImport(Library, EntryPoint = "amx_FixedInit")]
+        public static extern int FixedInit(ref AMXStruct amx);
+
+        [DllImport(Library, EntryPoint = "amx_FixedCleanup")]
+        public static extern int FixedCleanup(ref AMXStruct amx);
+
+        [DllImport(Library, EntryPoint = "amx_FloatInit")]
+        public static extern int FloatInit(ref AMXStruct amx);
+
+        [DllImport(Library, EntryPoint = "amx_FloatCleanup")]
+        public static extern int FloatCleanup(ref AMXStruct amx);
+
+
     }
 }

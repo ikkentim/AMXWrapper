@@ -43,6 +43,7 @@ namespace AMXWrapper
         private readonly int _codeLength;
         private readonly List<AMXNativeCall> _natives = new List<AMXNativeCall>();
         private AMXStruct _amx;
+        private AMXDefaultLibrary _libraries;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AMX" /> class.
@@ -222,6 +223,42 @@ namespace AMXWrapper
         protected override void Dispose(bool disposing)
         {
             Marshal.Release(_code);
+        }
+
+        private delegate int LibraryLoader(ref AMXStruct amx);
+
+        private void LoadLibrary(AMXDefaultLibrary libraries, AMXDefaultLibrary library, LibraryLoader loader, bool load)
+        {
+            if (libraries.HasFlag(library) == _libraries.HasFlag(library) || libraries.HasFlag(library) != load) return;
+
+            _libraries ^= library;
+            loader(ref _amx);
+        }
+
+
+        public void LoadLibrary(AMXDefaultLibrary library)
+        {
+            AssertNotDisposed();
+            LoadLibrary(library, AMXDefaultLibrary.Console, AMXCall.ConsoleInit, true);
+            LoadLibrary(library, AMXDefaultLibrary.Core, AMXCall.CoreInit, true);
+            LoadLibrary(library, AMXDefaultLibrary.DGram, AMXCall.DGramInit, true);
+            LoadLibrary(library, AMXDefaultLibrary.Fixed, AMXCall.FixedInit, true);
+            LoadLibrary(library, AMXDefaultLibrary.Float, AMXCall.FloatInit, true);
+            LoadLibrary(library, AMXDefaultLibrary.String, AMXCall.StringInit, true);
+            LoadLibrary(library, AMXDefaultLibrary.Time, AMXCall.TimeInit, true);
+        }
+
+        public void UnloadLibrary(AMXDefaultLibrary library)
+        {
+            AssertNotDisposed();
+            LoadLibrary(library, AMXDefaultLibrary.Console, AMXCall.ConsoleCleanup, false);
+            LoadLibrary(library, AMXDefaultLibrary.Core, AMXCall.CoreCleanup, false);
+            LoadLibrary(library, AMXDefaultLibrary.DGram, AMXCall.DGramCleanup, false);
+            LoadLibrary(library, AMXDefaultLibrary.Fixed, AMXCall.FixedCleanup, false);
+            LoadLibrary(library, AMXDefaultLibrary.Float, AMXCall.FloatCleanup, false);
+            LoadLibrary(library, AMXDefaultLibrary.String, AMXCall.StringCleanup, false);
+            LoadLibrary(library, AMXDefaultLibrary.Time, AMXCall.TimeClean, false);
+
         }
 
         /// <summary>

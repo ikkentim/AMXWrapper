@@ -78,7 +78,10 @@ public OnMessage(msg[])
                     "bAAAAAB0c3VqIG9zICB1b3l3b25rAAAALnRTbk8gdHJhIHNhd2xsYWMALmRlZU1uT2dhc3NhdyBl" +
                     "YWMgc2RlbGx0aXcgAAA6aA==");
 
-            var amx = new AMX(pcode/*"E:/test.amx"*/);
+//            var amx = new AMX("E:/test.amx");
+            var amx = new AMX(pcode);
+
+            amx.LoadLibrary(AMXDefaultLibrary.Core);
 
             amx.Register("println", (amx1, args1) =>
             {
@@ -92,7 +95,7 @@ public OnMessage(msg[])
 
             AMXPublic m = amx.FindPublic("OnMessage");
 
-            for (int i = 0;; i += 100)
+            for (int i = 0;i< 1000; i += 100)
             {
                 string str = string.Format("Caller {0} dialed in", i);
 
@@ -104,8 +107,10 @@ public OnMessage(msg[])
 
                 GC.Collect(); // To check for leaks
 
-                Thread.Sleep(10);
+                //Thread.Sleep(10);
             }
+
+            Console.ReadLine();
         }
     }
 }

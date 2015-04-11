@@ -43,6 +43,7 @@
     <Compile Include="AMX.cs" />
     <Compile Include="AMXArgumentList.cs" />
     <Compile Include="AMXCall.cs" />
+    <Compile Include="AMXDefaultLibrary.cs" />
     <Compile Include="AMXError.cs" />
     <Compile Include="AMXException.cs" />
     <Compile Include="AMXFlag.cs" />
