@@ -48,7 +48,7 @@ EXPORTS
   amx_UTF8Check
   amx_UTF8Len
   amx_ConsoleInit
-  amx_ConsoleInit
+  amx_ConsoleCleanup
   amx_CoreInit
   amx_CoreCleanup
   amx_DGramInit
