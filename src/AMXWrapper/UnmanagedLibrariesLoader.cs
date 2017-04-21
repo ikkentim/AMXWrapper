@@ -14,28 +14,23 @@
 // limitations under the License.
 
 
-#if !DEBUG
 using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-#endif
 
 namespace AMXWrapper
 {
     internal static class UnmanagedLibrariesLoader
     {
-#if !DEBUG
         public static bool IsLoaded = false;
 
         [DllImport("kernel32.dll")]
         private static extern IntPtr LoadLibrary(string dllToLoad);
-#endif
 
         public static void Load()
         {
-#if !DEBUG
             if (IsLoaded) return;
             IsLoaded = true;
 
@@ -74,7 +69,6 @@ namespace AMXWrapper
 
                 LoadLibrary(dllPath);
             }
-#endif
         }
     }
 }

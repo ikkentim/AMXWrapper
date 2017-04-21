@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -77,12 +78,30 @@ namespace AMXWrapper
         }
 
         /// <summary>
+        /// Gets an unsigned integer representation of this instance.
+        /// </summary>
+        /// <returns>An unsigned integer representation of this instance.</returns>
+        public uint AsUInt32()
+        {
+            return (uint)_value;
+        }
+
+        /// <summary>
         /// Gets an pointer representation of this instance.
         /// </summary>
         /// <returns>An pointer representation of this instance.</returns>
         public IntPtr AsIntPtr()
         {
             return new IntPtr(_value);
+        }
+
+        /// <summary>
+        /// Gets an pointer representation of this instance.
+        /// </summary>
+        /// <returns></returns>
+        public CellPtr AsCellPtr()
+        {
+            return new CellPtr(AsIntPtr());
         }
 
         /// <summary>
@@ -104,9 +123,8 @@ namespace AMXWrapper
 
             AMXCall.StrLen(AsIntPtr(), out length);
 
-            var sb = new StringBuilder();
+            var sb = new StringBuilder(length);
             AMXCall.GetString(sb, AsIntPtr(), 0, length + 1);
-
             return sb.ToString();
         }
 

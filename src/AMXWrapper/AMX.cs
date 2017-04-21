@@ -91,12 +91,9 @@ namespace AMXWrapper
             }
 
             _code = Marshal.AllocHGlobal(_codeLength = header.stackTop);
+
             FillMemory(_code, (uint) header.stackTop, 0);
             Marshal.Copy(pCode, 0, _code, header.size);
-
-            //var sb = new StringBuilder();
-            //var h = Marshal.AllocHGlobal(1);
-            //AMXCall.GetString(sb, h, 0, 0);
 
             var err = (AMXError) AMXCall.Init(ref amx, _code);
 
@@ -222,7 +219,15 @@ namespace AMXWrapper
         /// <param name="disposing">Whether managed resources should be disposed.</param>
         protected override void Dispose(bool disposing)
         {
-            Marshal.Release(_code);
+            if (disposing)
+            {
+                _natives.Clear();
+            }
+            if (_codeLength > 0)
+            {
+                AMXCall.Cleanup(ref _amx);
+                Marshal.FreeHGlobal(_code);
+            }
         }
 
         private delegate int LibraryLoader(ref AMXStruct amx);
@@ -357,9 +362,9 @@ namespace AMXWrapper
             int index;
 
             AssertNotDisposed();
-            AssertNoError(AMXCall.FindPublic(ref _amx, name, out index));
-
-            return new AMXPublic(this, index);
+            return AMXCall.FindPublic(ref _amx, name, out index) != (int) AMXError.None
+                ? null
+                : new AMXPublic(this, index);
         }
 
         /// <summary>
@@ -368,7 +373,7 @@ namespace AMXWrapper
         /// <param name="index">The index.</param>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        public IntPtr GetPublic(int index, out string name)
+        public CellPtr GetPublic(int index, out string name)
         {
             IntPtr ptr;
             var sb = new StringBuilder();
@@ -377,7 +382,7 @@ namespace AMXWrapper
             AssertNoError(AMXCall.GetPublic(ref _amx, index, sb, out ptr));
 
             name = sb.ToString();
-            return ptr;
+            return new CellPtr(ptr);
         }
 
         /// <summary>
@@ -449,14 +454,14 @@ namespace AMXWrapper
         /// <param name="name">The name.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentNullException">name</exception>
-        public IntPtr FindPublicVar(string name)
+        public CellPtr FindPublicVar(string name)
         {
             if (name == null) throw new ArgumentNullException("name");
             IntPtr ptr;
             AssertNotDisposed();
             AssertNoError(AMXCall.FindPublicVar(ref _amx, name, out ptr));
 
-            return ptr;
+            return new CellPtr(ptr);
         }
 
         /// <summary>
@@ -465,7 +470,7 @@ namespace AMXWrapper
         /// <param name="index">The index.</param>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        public IntPtr GetPublicVar(int index, out string name)
+        public CellPtr GetPublicVar(int index, out string name)
         {
             IntPtr ptr;
             var sb = new StringBuilder();
@@ -474,7 +479,7 @@ namespace AMXWrapper
             AssertNoError(AMXCall.GetPublicVar(ref _amx, index, sb, out ptr));
 
             name = sb.ToString();
-            return ptr;
+            return new CellPtr(ptr);
         }
 
         /// <summary>
@@ -494,7 +499,7 @@ namespace AMXWrapper
         /// <param name="pack">if set to <c>true</c> packs the string.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentNullException">value</exception>
-        public IntPtr Push(string value, bool pack = false)
+        public CellPtr Push(string value, bool pack = false)
         {
             if (value == null) throw new ArgumentNullException("value");
             IntPtr address;
@@ -502,7 +507,7 @@ namespace AMXWrapper
             AssertNotDisposed();
             AssertNoError(AMXCall.PushString(ref _amx, out address, value, pack ? 1 : 0, 0));
 
-            return address;
+            return new CellPtr(address);
         }
 
         /// <summary>
@@ -510,10 +515,10 @@ namespace AMXWrapper
         /// </summary>
         /// <param name="pointer">The pointer.</param>
         /// <returns>The length of the string at the specified <paramref name="pointer" />.</returns>
-        public static int GetStringLength(IntPtr pointer)
+        public static int GetStringLength(CellPtr pointer)
         {
             int len;
-            AssertNoError(AMXCall.StrLen(pointer, out len));
+            AssertNoError(AMXCall.StrLen(pointer.Value, out len));
 
             return len;
         }
@@ -524,10 +529,10 @@ namespace AMXWrapper
         /// <param name="pointer">The pointer.</param>
         /// <param name="length">The length.</param>
         /// <returns>The string at the specified <paramref name="pointer" />.</returns>
-        public static string GetString(IntPtr pointer, int length)
+        public static string GetString(CellPtr pointer, int length)
         {
             var sb = new StringBuilder();
-            AssertNoError(AMXCall.GetString(sb, pointer, 0, length));
+            AssertNoError(AMXCall.GetString(sb, pointer.Value, 0, length));
 
             return sb.ToString();
         }
@@ -537,7 +542,7 @@ namespace AMXWrapper
         /// </summary>
         /// <param name="pointer">The pointer.</param>
         /// <returns>The string at the specified <paramref name="pointer" />.</returns>
-        public static string GetString(IntPtr pointer)
+        public static string GetString(CellPtr pointer)
         {
             int len = GetStringLength(pointer);
             return GetString(pointer, len);
@@ -551,10 +556,10 @@ namespace AMXWrapper
         /// <param name="pack">if set to <c>true</c> packs the string.</param>
         /// <param name="length">The length.</param>
         /// <exception cref="System.ArgumentNullException">value</exception>
-        public static void SetString(IntPtr pointer, string value, bool pack, int length)
+        public static void SetString(CellPtr pointer, string value, bool pack, int length)
         {
             if (value == null) throw new ArgumentNullException("value");
-            AssertNoError(AMXCall.SetString(pointer, value, pack ? 1 : 0, 0, length));
+            AssertNoError(AMXCall.SetString(pointer.Value, value, pack ? 1 : 0, 0, length));
         }
 
         /// <summary>
@@ -563,19 +568,19 @@ namespace AMXWrapper
         /// <param name="pointer">The pointer.</param>
         /// <param name="value">The value.</param>
         /// <param name="pack">if set to <c>true</c> packs the string.</param>
-        public static void SetString(IntPtr pointer, string value, bool pack)
+        public static void SetString(CellPtr pointer, string value, bool pack)
         {
             SetString(pointer, value, pack, value.Length);
         }
 
         /// <summary>
-        ///     Pushes the specified <paramref name="value" />.
+        ///     Pushes the specified pointer <paramref name="value" />.
         /// </summary>
         /// <param name="value">The value.</param>
-        public void Push(IntPtr value)
+        public void Push(CellPtr value)
         {
             AssertNotDisposed();
-            AssertNoError(AMXCall.PushAddress(ref _amx, value));
+            AssertNoError(AMXCall.PushAddress(ref _amx, value.Value));
         }
 
         /// <summary>
@@ -612,7 +617,7 @@ namespace AMXWrapper
         /// <param name="address">The address.</param>
         /// <param name="value">The value.</param>
         /// <exception cref="System.ArgumentNullException">value</exception>
-        public void Push(out IntPtr address, IEnumerable<int> value)
+        public void Push(out CellPtr address, IEnumerable<int> value)
         {
             if (value == null) throw new ArgumentNullException("value");
             AssertNotDisposed();
@@ -634,7 +639,7 @@ namespace AMXWrapper
         /// <param name="address">The address.</param>
         /// <param name="value">The value.</param>
         /// <exception cref="System.ArgumentNullException">value</exception>
-        public void Push(out IntPtr address, IEnumerable<Cell> value)
+        public void Push(out CellPtr address, IEnumerable<Cell> value)
         {
             if (value == null) throw new ArgumentNullException("value");
             AssertNotDisposed();
@@ -648,7 +653,7 @@ namespace AMXWrapper
         /// <param name="address">The address.</param>
         /// <param name="value">The value.</param>
         /// <exception cref="System.ArgumentNullException">value</exception>
-        public void Push(out IntPtr address, IEnumerable<float> value)
+        public void Push(out CellPtr address, IEnumerable<float> value)
         {
             if (value == null) throw new ArgumentNullException("value");
             Push(out address, value.Select(Cell.FromFloat));
@@ -729,22 +734,22 @@ namespace AMXWrapper
         /// </summary>
         /// <param name="cells">The cells.</param>
         /// <returns>The address at which the cells have been allocated.</returns>
-        public IntPtr Allot(int cells)
+        public CellPtr Allot(int cells)
         {
             IntPtr address;
             AssertNotDisposed();
             AssertNoError(AMXCall.Allot(ref _amx, cells, out address));
-            return address;
+            return new CellPtr(address);
         }
 
         /// <summary>
         ///     Releases the specified address.
         /// </summary>
         /// <param name="address">The address.</param>
-        public void Release(IntPtr address)
+        public void Release(CellPtr address)
         {
             AssertNotDisposed();
-            AssertNoError(AMXCall.Release(ref _amx, address));
+            AssertNoError(AMXCall.Release(ref _amx, address.Value));
         }
 
 

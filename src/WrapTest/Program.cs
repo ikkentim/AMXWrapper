@@ -99,7 +99,7 @@ public OnMessage(msg[])
             {
                 string str = string.Format("Caller {0} dialed in", i);
 
-                IntPtr ptr = amx.Push(str);
+                var ptr = amx.Push(str);
 
                 m.Execute();
 

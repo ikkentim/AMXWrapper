@@ -99,7 +99,7 @@ namespace AMXWrapper
         public static extern int PushAddress(ref AMXStruct amx, ref Cell cell);
 
         [DllImport(Library, EntryPoint = "amx_PushArray")]
-        public static extern int PushArray(ref AMXStruct amx, out IntPtr address, int[] array, int numcells);
+        public static extern int PushArray(ref AMXStruct amx, out CellPtr address, int[] array, int numcells);
 
         [DllImport(Library, EntryPoint = "amx_PushString")]
         public static extern int PushString(ref AMXStruct amx, out IntPtr address, string str, int pack, int useWchar);
